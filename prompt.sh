@@ -163,14 +163,26 @@ if [ -n "${BASH_VERSION}" ]; then
             prompt+="$(eval_prompt_callback_if_present)"
             prompt+="${omg_second_line}"
         else
-            prompt+="$(eval_prompt_callback_if_present)"
-            prompt+="${omg_ungit_prompt}"
+            #prompt+="$(eval_prompt_callback_if_present)"
+            #prompt+="${omg_ungit_prompt}"
+            local home=`df /dev/sda1|grep -o [0-9]%`
+            prompt="\e[38;05;238m[\t][$(date +%d.%m.%Y)]:[\u]  "$home"\e[0m\n"
+            prompt+=" \w :>"
+            #prompt+=$(check_user)
         fi
 
         echo "${prompt}"
     }
     
     PS2="${yellow}→${reset} "
+
+    function check_user() {
+        if [[ `id | grep uid=0` ]]; then
+            echo  "W:"
+        else 
+            echo "\u"
+        fi
+    }
 
     function bash_prompt() {
         PS1="$(build_prompt)"
