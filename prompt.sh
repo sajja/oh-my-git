@@ -80,6 +80,7 @@ if [ -n "${BASH_VERSION}" ]; then
         local purple='\e[0;35m'
         local cyan='\e[0;36m'
         local white='\e[0;37m'
+        local bright_white='\e[1;37m'
 
         #background
         local background_black='\e[40m'
@@ -90,16 +91,29 @@ if [ -n "${BASH_VERSION}" ]; then
         local background_purple='\e[45m'
         local background_cyan='\e[46m'
         local background_white='\e[47m'
+        local background_gray='\e[47m'
         
         local reset='\e[0m'     # Text Reset]'
 
         local black_on_white="${black}${background_white}"
+        local white_on_black="${white}${background_black}"
+        local white_on_blue="${white}${background_blue}"
+        local cyan_on_black="${cyan}${background_black}"
+        local cyan_on_red="${cyan}${background_red}"
+        local cyan_on_gray="${cyan}${background_gray}"
+        local black_on_gray="${black}${background_gray}"
+        local blue_on_gray="${blue}${background_gray}"
+        local black_on_cyan="${black}${background_cyan}"
         local yellow_on_white="${yellow}${background_white}"
         local red_on_white="${red}${background_white}"
         local red_on_black="${red}${background_black}"
         local black_on_red="${black}${background_red}"
         local white_on_red="${white}${background_red}"
+        local white_on_cyan="${white}${background_cyan}"
+        local bright_white_on_cyan="${bright_white}${background_cyan}"
         local yellow_on_red="${yellow}${background_red}"
+        local white_on_gray="${white}${background_gray}"
+        local gray_on_black="${white}${background_black}"
 
 
         # Flags
@@ -162,22 +176,20 @@ if [ -n "${BASH_VERSION}" ]; then
             prompt+="${omg_last_symbol_color}${reset}\n"
             prompt+="$(eval_prompt_callback_if_present)"
             prompt+="${omg_second_line}"
+            #prompt+="\w: "
         else
-            #prompt+="$(eval_prompt_callback_if_present)"
-            #prompt+="${omg_ungit_prompt}"
-            local home=`df /dev/sda1|grep -o [0-9]%`
-            prompt="\e[38;05;238m[\t][$(date +%d.%m.%Y)]:[\u]  "$home"\e[0m\n"
-            prompt+=" \w :>"
-            #prompt+=$(check_user)
+            prompt=${black_on_cyan}
+            prompt+="${bright_white_on_cyan}\u ${cyan_on_gray} ${black_on_gray}$(echo `pwd`|sed "s|$HOME|~ |g"|sed "s/\// /g" |sed "s/^/\//")${white_on_blue}  \d ${blue_on_gray} \t ${gray_on_black}${reset}"
+            prompt+="\n$ "
         fi
 
         echo "${prompt}"
     }
     
     PS2="${yellow}→${reset} "
-
+ 
     function check_user() {
-        if [[ `id | grep uid=0` ]]; then
+        if [[ `id |o grep uid=0` ]]; then
             echo  "W:"
         else 
             echo "\u"
