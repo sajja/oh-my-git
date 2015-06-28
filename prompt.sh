@@ -114,6 +114,7 @@ if [ -n "${BASH_VERSION}" ]; then
         local yellow_on_red="${yellow}${background_red}"
         local white_on_gray="${white}${background_gray}"
         local gray_on_black="${white}${background_black}"
+        local gray_on_cyan="${white}${background_cyan}"
 
 
         # Flags
@@ -178,8 +179,22 @@ if [ -n "${BASH_VERSION}" ]; then
             prompt+="${omg_second_line}"
             #prompt+="\w: "
         else
+            full=`acpi| grep Ful`
+            dis=`acpi| grep Discharging`
+            charge=`acpi| grep Charging`
+
             prompt=${black_on_cyan}
-            prompt+="${bright_white_on_cyan}\u ${cyan_on_gray} ${black_on_gray}$(echo `pwd`|sed "s|$HOME|~ |g"|sed "s/\// /g" |sed "s/^/\//")${white_on_blue}  \d ${blue_on_gray} \t ${gray_on_black}${reset}"
+            prompt+="${bright_white_on_cyan}\u ${cyan_on_gray} ${black_on_gray}$(echo `pwd`|sed "s|$HOME|~ |g"|sed "s/\// /g" |sed "s/^/\//")${white_on_blue}  \d ${blue_on_gray} \t ${gray_on_cyan}${reset}"
+            if [ ! -z "$dis" ]; then
+                prompt+="${black_on_cyan}🔋 "
+                prompt+=`echo $dis|awk '{print $4}'|cut -d ',' -f1`
+                prompt+="${cyan_on_black}${reset}"
+            elif [ ! -z "$charge" ]; then
+                prompt+="${black_on_cyan}⚡ "
+                prompt+=`echo $charge|awk '{print $4}'|cut -d ',' -f1`
+                prompt+="${cyan_on_black}${reset}"
+            fi
+
             prompt+="\n$ "
         fi
 
